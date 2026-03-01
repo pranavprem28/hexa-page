@@ -18,12 +18,8 @@ export default function Navbar() {
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <nav className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-6">
-
         {/* Logo */}
-        <Link
-          href="/"
-          className="text-2xl font-semibold tracking-tight text-gray-900"
-        >
+        <Link href="/" className="text-2xl font-semibold tracking-tight text-gray-900">
           Hexa
         </Link>
 
@@ -37,8 +33,8 @@ export default function Navbar() {
             <input
               type="text"
               placeholder="Search products..."
-              className="w-full bg-gray-100 border border-gray-300 rounded-full py-2 pl-9 pr-4 text-sm 
-              text-gray-900 placeholder:text-gray-500 
+              className="w-full bg-gray-100 border border-gray-300 rounded-full py-2 pl-9 pr-4 text-sm
+              text-gray-900 placeholder:text-gray-500
               focus:outline-none focus:ring-2 focus:ring-gray-900 transition"
             />
           </div>
@@ -46,7 +42,6 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700">
-
           <Link href="/" className="hover:text-black transition">
             Home
           </Link>
@@ -64,12 +59,8 @@ export default function Navbar() {
           </Link>
 
           {/* Cart */}
-          <Link
-            href="/cart"
-            className="relative flex items-center gap-1 hover:text-black transition"
-          >
+          <Link href="/cart" className="relative flex items-center gap-1 hover:text-black transition">
             <ShoppingCart size={18} />
-
             {mounted && totalItems > 0 && (
               <span className="absolute -top-2 -right-3 bg-black text-white text-[10px] px-2 py-0.5 rounded-full">
                 {totalItems}
@@ -80,8 +71,7 @@ export default function Navbar() {
 
         {/* Mobile Icons */}
         <div className="md:hidden flex items-center gap-4">
-
-          {/* Mobile Search Icon */}
+          {/* Mobile Search Icon (optional) */}
           <Search size={20} className="text-gray-700" />
 
           {/* Cart */}
@@ -95,7 +85,11 @@ export default function Navbar() {
           </Link>
 
           {/* Hamburger */}
-          <button onClick={() => setMenuOpen(!menuOpen)}>
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="p-1"
+            aria-label="Toggle menu"
+          >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
@@ -103,11 +97,21 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white px-6 py-4 space-y-4 text-sm font-medium text-gray-700">
-          <Link href="/" onClick={() => setMenuOpen(false)}>Home</Link>
-          <Link href="/products" onClick={() => setMenuOpen(false)}>Products</Link>
-          <Link href="/about" onClick={() => setMenuOpen(false)}>About</Link>
-          <Link href="/contact" onClick={() => setMenuOpen(false)}>Contact</Link>
+        <div className="md:hidden border-t border-gray-200 bg-white px-6 py-4">
+          <div className="flex flex-col gap-4 text-sm font-medium text-gray-700">
+            <Link className="block" href="/" onClick={() => setMenuOpen(false)}>
+              Home
+            </Link>
+            <Link className="block" href="/products" onClick={() => setMenuOpen(false)}>
+              Products
+            </Link>
+            <Link className="block" href="/about" onClick={() => setMenuOpen(false)}>
+              About
+            </Link>
+            <Link className="block" href="/contact" onClick={() => setMenuOpen(false)}>
+              Contact
+            </Link>
+          </div>
         </div>
       )}
     </header>
