@@ -1,70 +1,70 @@
-import Image from "next/image"
-import Link from "next/link"
-import { ProductService, Product } from "@/lib/ProductService"
-import AddToCartButton from "@/components/AddToCartButton"
+import { useEffect, useState } from "react"
+import Navbar from "../../components/Navbar"
+import Footer from "../../components/Footer"
+import ProductCard from "../../components/ProductCard"
 
-interface Props {
-  products: Product[]
+export interface Product {
+  id: number
+  title: string
+  price: number
+  image: string
+  category?: string
+  description?: string
 }
 
-export default function ProductsPage({ products }: Props) {
+export default function ProductsPage() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setLoading(true)
+        setError("")
+        const res = await fetch("https://fakestoreapi.com/products")
+        if (!res.ok) throw new Error(`API failed: ${res.status}`)
+        const data = (await res.json()) as Product[]
+        setProducts(data)
+      } catch (e: any) {
+        setError(e?.message || "Failed to load products")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    load()
+  }, [])
+
   return (
-    <div className="max-w-6xl mx-auto py-20 px-6">
-      <h1 className="text-3xl font-bold mb-10 text-black">
-        Products
-      </h1>
+    <div className="min-h-screen bg-black text-white">
 
-      <div className="grid md:grid-cols-3 gap-8">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white border border-gray-200 p-5 rounded-2xl
-                       shadow-sm hover:shadow-lg hover:-translate-y-1
-                       transition-all duration-300 group"
-          >
-            {/* Product Image */}
-            <Link href={`/products/${product.id}`} className="block">
-              <div className="bg-gray-50 rounded-xl h-48 flex items-center justify-center overflow-hidden">
-                <Image
-                  src={product.image}
-                  alt={product.title}
-                  width={200}
-                  height={200}
-                  className="object-contain h-40 transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
 
-              {/* Title */}
-              <h2 className="mt-4 font-semibold text-gray-800 line-clamp-2">
-                {product.title}
-              </h2>
-            </Link>
+      <main className="max-w-7xl mx-auto px-6 py-10">
+        <h1 className="text-3xl font-bold mb-6">Products</h1>
 
-            {/* Price */}
-            <p className="text-lg font-bold text-gray-900 mt-2">
-              ₹ {product.price.toLocaleString()}
+        {loading && <p className="text-gray-400">Loading products...</p>}
+
+        {!loading && error && (
+          <div className="bg-red-950/40 border border-red-800 rounded-xl p-4">
+            <p className="font-semibold">Could not load products</p>
+            <p className="text-sm text-red-200 mt-1">{error}</p>
+            <p className="text-sm text-gray-400 mt-2">
+              This happens when the API blocks Vercel server requests. Client-side fetch avoids that.
             </p>
-
-            {/* Add To Cart Button */}
-            <div className="mt-4">
-              <AddToCartButton product={product} />
-            </div>
           </div>
-        ))}
-      </div>
+        )}
+
+        {!loading && !error && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+            {products.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        )}
+      </main>
+
+
     </div>
   )
-}
-
-/* ===========================
-   Server Side Data Fetching
-=========================== */
-export async function getServerSideProps() {
-  const products = await ProductService.getAll()
-
-  return {
-    props: {
-      products,
-    },
-  }
 }
